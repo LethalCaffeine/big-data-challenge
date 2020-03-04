@@ -52,29 +52,29 @@ def rocstories(data_dir, n_train=1497, n_valid=374):
     vaY = np.asarray(vaY, dtype=np.int32)
     return (trX1, trX2, trX3, trY), (vaX1, vaX2, vaX3, vaY), (teX1, teX2, teX3)
 
-def _stance(path, topic=None):
+def _stance(path):
     def clean_ascii(text):
         # function to remove non-ASCII chars from data
         return ''.join(i for i in text if ord(i) < 128)
-    orig = pd.read_csv(path, delimiter='\t', header=0, encoding = "latin-1")
-    orig['Tweet'] = orig['Tweet'].apply(clean_ascii)
+    orig = pd.read_csv(path, header=0, encoding = "latin-1")
+    orig['text'] = orig['text'].apply(clean_ascii)
     df = orig
     # Get only those tweets that pertain to a single topic in the training data
-    if topic is not None:
-        df = df.loc[df['Target'] == topic]
-    X = df.Tweet.values
-    stances = ["AGAINST", "FAVOR", "NONE", "UNKNOWN"]
-    class_nums = {s: i for i, s in enumerate(stances)}
-    Y = np.array([class_nums[s] for s in df.Stance])
+    #if topic is not None:
+        #df = df.loc[df['Target'] == topic]
+    X = df.text.values
+    #stances = ["NOT REAL", "REAL"]
+    #class_nums = {s: i for i, s in enumerate(stances)}
+    Y = np.array(df.target)
     return X, Y
 
-def stance(data_dir, topic=None):
+def stance(data_dir):
     path = Path(data_dir)
-    trainfile = 'semeval2016-task6-trainingdata.txt'
-    testfile = 'SemEval2016-Task6-subtaskA-testdata.txt'
+    trainfile = 'train-cleaned.csv'
+    testfile = 'test.csv'
 
-    X, Y = _stance(path/trainfile, topic=topic)
-    teX, _ = _stance(path/testfile, topic=topic)
+    X, Y = _stance(path/trainfile)
+    teX, _ = _stance(path/testfile)
     tr_text, va_text, tr_sent, va_sent = train_test_split(X, Y, test_size=0.2, random_state=seed)
     trX = []
     trY = []
@@ -93,7 +93,7 @@ def stance(data_dir, topic=None):
 
 if __name__ == "__main__":
     ## Test
-    data_dir = "./data"
+    data_dir = r"C:\Users\AlexHall97\Documents\GitHub\big-data-challenge"
 
     (trX, trY), (vaX, vaY), teX = stance(data_dir)
 
