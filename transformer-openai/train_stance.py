@@ -121,7 +121,7 @@ pred_fns = {
 }
 
 filenames = {
-    'stance': 'stance.tsv',
+    'train-cleaned': 'train-cleaned.csv',
 }
 
 label_decoders = {
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     n_vocab = len(text_encoder.encoder)
 
     print("Encoding dataset...")
-    ((trX, trY), (vaX, vaY), (teX, )) = encode_dataset(*stance(data_dir, topic=topic),
+    ((trX, trY), (vaX, vaY), (teX, )) = encode_dataset(*stance(data_dir),
      encoder=text_encoder)
 
     encoder['_start_'] = len(encoder)
